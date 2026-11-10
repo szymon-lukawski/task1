@@ -85,6 +85,11 @@ def create_loan():
 
             # Redirect to the list of loans
             return redirect(url_for('loans.list_loans'))
+        except ValueError as e:
+            # Input rejected by model validators
+            db.session.rollback()
+            print('Invalid loan data')
+            return jsonify({'error': f'Invalid loan data: {str(e)}'}), 400
         except Exception as e:
             db.session.rollback()
             error_message = f'Error creating loan: {str(e)}'
