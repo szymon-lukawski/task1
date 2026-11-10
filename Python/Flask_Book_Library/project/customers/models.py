@@ -1,4 +1,6 @@
+from sqlalchemy.orm import validates
 from project import db, app
+from project.validators import validate_text, validate_age
 
 
 # Customer model
@@ -13,6 +15,15 @@ class Customer(db.Model):
         self.name = name
         self.city = city
         self.age = age
+
+    # Validators run on every attribute assignment (create and edit)
+    @validates('name', 'city')
+    def validate_text_fields(self, key, value):
+        return validate_text(key, value)
+
+    @validates('age')
+    def validate_age(self, key, value):
+        return validate_age(key, value)
 
     def __repr__(self):
         return f"Customer(ID: {self.id}, Name: {self.name}, City: {self.city}, Age: {self.age})"
